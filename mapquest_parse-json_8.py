@@ -24,12 +24,14 @@ while True:
             routeType == "BICYCLE"
     else:
         routeType = "FASTEST"
-    if route== "quit" or route == "q" or route == "N":
+    if route== "quit" or route == "q":
         break
+
+    collections = "check"
     narrat = input("Show narratives? Y/N: ")
     if narrat == "quit" or narrat == "q":
         break
-    url = main_api + urllib.parse.urlencode({"key": key, "from":orig, "to":dest, "routeType":routeType})
+    url = main_api + urllib.parse.urlencode({"key": key, "from":orig, "to":dest, "routeType":routeType, "ambiguities": collections})
     print("URL: " + (url))
     json_data = requests.get(url).json()
     
@@ -49,6 +51,7 @@ while True:
         if narrat == "Y": 
             for i in json_data["route"]["legs"][0]["maneuvers"]:
                 print((i["narrative"]) + " (" + str("{:.2f}".format((i["distance"])*1.61) + " km)"))
+                print("Go for " + (i["formattedTime"]) + " h by " + (i["transportMode"]))
             print("=============================================\n")
     elif json_status == 402:
         print("**********************************************")
@@ -63,5 +66,3 @@ while True:
         print("For Staus Code: " + str(json_status) + "; Refer to:")
         print("https://developer.mapquest.com/documentation/directions-api/status-codes")
         print("************************************************************************\n")
-
-
